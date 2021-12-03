@@ -1,0 +1,908 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "CoinOrg API",
+    "description": "This project is summer practice in Sibdev.",
+    "contact": {
+      "email": "contact@project.local"
+    },
+    "license": {
+      "name": "MIT License"
+    },
+    "version": "v1"
+  },
+  "host": "0.0.0.0:8000",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/api/v1",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "Basic": {
+      "type": "basic"
+    }
+  },
+  "security": [
+    {
+      "Basic": []
+    }
+  ],
+  "paths": {
+    "/token/": {
+      "post": {
+        "operationId": "token_create",
+        "description": "Takes a set of user credentials and returns an access and refresh JSON web\ntoken pair to prove the authentication of those credentials.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TokenObtainPair"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/TokenObtainPair"
+            }
+          }
+        },
+        "tags": [
+          "token"
+        ]
+      },
+      "parameters": []
+    },
+    "/token/refresh/": {
+      "post": {
+        "operationId": "token_refresh_create",
+        "description": "Takes a refresh type JSON web token and returns an access type JSON web\ntoken if the refresh token is valid.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TokenRefresh"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/TokenRefresh"
+            }
+          }
+        },
+        "tags": [
+          "token"
+        ]
+      },
+      "parameters": []
+    },
+    "/transactions/": {
+      "get": {
+        "operationId": "transactions_list",
+        "description": "Return all personal transactions filtered from date period.",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ListTransaction"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "post": {
+        "operationId": "transactions_create",
+        "description": "Create new transaction.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTransaction"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CreateTransaction"
+            }
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "parameters": []
+    },
+    "/transactions/categories/": {
+      "get": {
+        "operationId": "transactions_categories_list",
+        "description": "Return all personal categories.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListCategory"
+              }
+            }
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "post": {
+        "operationId": "transactions_categories_create",
+        "description": "Create new category.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCategory"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CreateCategory"
+            }
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "parameters": []
+    },
+    "/transactions/categories/info/": {
+      "get": {
+        "operationId": "transactions_categories_get_category_sum",
+        "description": "Return category collection with sum of bound transactions.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListCategory"
+              }
+            }
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "parameters": []
+    },
+    "/transactions/categories/{id}/": {
+      "put": {
+        "operationId": "transactions_categories_update",
+        "description": "Fully update category with given params.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "patch": {
+        "operationId": "transactions_categories_partial_update",
+        "description": "Partially update category with given params.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "delete": {
+        "operationId": "transactions_categories_delete",
+        "description": "Delete category with specified `id`.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/transactions/period-info/": {
+      "get": {
+        "operationId": "transactions_get_period_report",
+        "description": "Return income and expense sums by date period.",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "A page number within the paginated result set.",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "required": [
+                "count",
+                "results"
+              ],
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "next": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "previous": {
+                  "type": "string",
+                  "format": "uri",
+                  "x-nullable": true
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/DatePeriod"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "parameters": []
+    },
+    "/transactions/{id}/": {
+      "put": {
+        "operationId": "transactions_update",
+        "description": "Fully update transaction with given params.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateTransaction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UpdateTransaction"
+            }
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "patch": {
+        "operationId": "transactions_partial_update",
+        "description": "Partially update transaction with given params.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateTransaction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UpdateTransaction"
+            }
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "delete": {
+        "operationId": "transactions_delete",
+        "description": "Delete transaction with specified `id`.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "transactions"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/users/": {
+      "post": {
+        "operationId": "users_create",
+        "description": "Create new instance of CustomUser.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCustomUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CreateCustomUser"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": []
+    },
+    "/users/me/": {
+      "get": {
+        "operationId": "users_me_read",
+        "description": "Get base user-info: `username`, `id`.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/BaseCustomUser"
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      },
+      "parameters": []
+    },
+    "/widgets/": {
+      "post": {
+        "operationId": "widgets_create",
+        "description": "Create new widget.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateWidget"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CreateWidget"
+            }
+          }
+        },
+        "tags": [
+          "widgets"
+        ]
+      },
+      "parameters": []
+    },
+    "/widgets/{id}/": {
+      "put": {
+        "operationId": "widgets_update",
+        "description": "Fully update widget with given params.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "widgets"
+        ]
+      },
+      "patch": {
+        "operationId": "widgets_partial_update",
+        "description": "Partially update widget with given params.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "widgets"
+        ]
+      },
+      "delete": {
+        "operationId": "widgets_delete",
+        "description": "Delete widget with specified `id`.",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "widgets"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "TokenObtainPair": {
+      "required": [
+        "email",
+        "password"
+      ],
+      "type": "object",
+      "properties": {
+        "email": {
+          "title": "Email",
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "title": "Password",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "TokenRefresh": {
+      "required": [
+        "refresh"
+      ],
+      "type": "object",
+      "properties": {
+        "refresh": {
+          "title": "Refresh",
+          "type": "string",
+          "minLength": 1
+        },
+        "access": {
+          "title": "Access",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "ListTransaction": {
+      "required": [
+        "category",
+        "sum"
+      ],
+      "type": "object",
+      "properties": {
+        "category": {
+          "title": "Transaction category",
+          "type": "integer"
+        },
+        "sum": {
+          "title": "Monetary amount of the transaction",
+          "type": "string",
+          "format": "decimal"
+        },
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "category_type": {
+          "title": "Category type",
+          "type": "string",
+          "readOnly": true,
+          "minLength": 1
+        }
+      }
+    },
+    "CreateTransaction": {
+      "required": [
+        "category",
+        "sum"
+      ],
+      "type": "object",
+      "properties": {
+        "category": {
+          "title": "Transaction category",
+          "type": "integer"
+        },
+        "sum": {
+          "title": "Monetary amount of the transaction",
+          "type": "string",
+          "format": "decimal"
+        }
+      }
+    },
+    "ListCategory": {
+      "required": [
+        "title",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "title": {
+          "title": "Category title",
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "type": {
+          "title": "Category type",
+          "type": "string",
+          "enum": [
+            "INC",
+            "EXP"
+          ]
+        },
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "sum": {
+          "title": "Sum",
+          "type": "integer",
+          "readOnly": true
+        }
+      }
+    },
+    "CreateCategory": {
+      "required": [
+        "title",
+        "type"
+      ],
+      "type": "object",
+      "properties": {
+        "title": {
+          "title": "Category title",
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "type": {
+          "title": "Category type",
+          "type": "string",
+          "enum": [
+            "INC",
+            "EXP"
+          ]
+        }
+      }
+    },
+    "DatePeriod": {
+      "required": [
+        "start_date",
+        "end_date"
+      ],
+      "type": "object",
+      "properties": {
+        "start_date": {
+          "title": "Start date",
+          "type": "string",
+          "format": "date-time"
+        },
+        "end_date": {
+          "title": "End date",
+          "type": "string",
+          "format": "date-time"
+        },
+        "income": {
+          "title": "Income",
+          "type": "string",
+          "readOnly": true
+        },
+        "expense": {
+          "title": "Expense",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "UpdateTransaction": {
+      "required": [
+        "category",
+        "sum"
+      ],
+      "type": "object",
+      "properties": {
+        "category": {
+          "title": "Transaction category",
+          "type": "integer"
+        },
+        "sum": {
+          "title": "Monetary amount of the transaction",
+          "type": "string",
+          "format": "decimal"
+        }
+      }
+    },
+    "CreateCustomUser": {
+      "required": [
+        "username",
+        "email",
+        "password"
+      ],
+      "type": "object",
+      "properties": {
+        "username": {
+          "title": "Имя пользователя",
+          "type": "string",
+          "maxLength": 32,
+          "minLength": 1
+        },
+        "email": {
+          "title": "Адрес электронной почты",
+          "type": "string",
+          "format": "email",
+          "maxLength": 254,
+          "minLength": 1
+        },
+        "password": {
+          "title": "Password",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "BaseCustomUser": {
+      "required": [
+        "username"
+      ],
+      "type": "object",
+      "properties": {
+        "username": {
+          "title": "Имя пользователя",
+          "type": "string",
+          "maxLength": 32,
+          "minLength": 1
+        },
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        }
+      }
+    },
+    "ListWidget": {
+      "required": [
+        "category",
+        "limit",
+        "duration",
+        "criteria"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "category": {
+          "title": "Tracked category",
+          "type": "integer"
+        },
+        "limit": {
+          "title": "Max sum that user can spend",
+          "type": "string",
+          "format": "decimal"
+        },
+        "duration": {
+          "title": "Validity period of widget (in days)",
+          "type": "number"
+        },
+        "criteria": {
+          "title": "Spending control criteria",
+          "type": "string",
+          "enum": [
+            "M",
+            "L"
+          ]
+        },
+        "color": {
+          "title": "Color of widget",
+          "type": "string",
+          "maxLength": 8,
+          "minLength": 1
+        },
+        "creation_date": {
+          "title": "Date when widget was created",
+          "type": "string",
+          "format": "date-time"
+        },
+        "ending_date": {
+          "title": "Ending date",
+          "type": "string",
+          "readOnly": true
+        },
+        "sum": {
+          "title": "Sum",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "CreateWidget": {
+      "required": [
+        "category",
+        "limit",
+        "duration",
+        "criteria",
+        "color"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "category": {
+          "title": "Tracked category",
+          "type": "integer"
+        },
+        "limit": {
+          "title": "Max sum that user can spend",
+          "type": "string",
+          "format": "decimal"
+        },
+        "duration": {
+          "title": "Validity period of widget (in days)",
+          "type": "number"
+        },
+        "criteria": {
+          "title": "Spending control criteria",
+          "type": "string",
+          "enum": [
+            "M",
+            "L"
+          ]
+        },
+        "color": {
+          "title": "Color",
+          "type": "string",
+          "maxLength": 10,
+          "minLength": 1
+        },
+        "creation_date": {
+          "title": "Date when widget was created",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

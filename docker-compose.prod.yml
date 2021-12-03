@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+    nginx:
+      build:
+        context: ./
+        dockerfile: ./nginx/Dockerfile
+      depends_on:
+        - server
+      ports:
+        - 80:80
+      volumes:
+        - ./server/media:/nginx/media
+
+    server:
+      restart: always
+      build:
+        context: ./
+        dockerfile: ./server/Dockerfile.prod
+      command: gunicorn config.wsgi -c ./config/gunicorn.py
+      volumes:
+        - ./server/media:/server/media
+      depends_on:
+        - db
+      env_file:
+        - ./server/config/settings/.env
+
+    db:
+      restart: always
+      image: postgres:12.4-alpine
+      volumes:
+        - ./pg_data:/var/lib/postgresql/data
+      env_file:
+        - ./server/config/settings/.env
